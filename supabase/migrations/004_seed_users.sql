@@ -5,6 +5,32 @@
 --   Joran   -> 6249  |  Floris  -> 5318  |  Jules   -> 2947  |  Levi    -> 8063
 --   Matis   -> 1594  |  Robbe   -> 7402  |  Simon   -> 3786  |  Michiel -> 6127
 
+-- Helper function must be created before the do $$ block that calls it
+create or replace function insert_grid(p_uid uuid, p_tasks text[]) returns void as $$
+declare
+  free_id integer;
+  task_id integer;
+  pos     integer := 0;
+  j       integer;
+begin
+  select id into free_id from bingo_squares where label = 'Free vakje';
+  for j in 1..24 loop
+    if pos = 12 then
+      insert into user_squares (user_id, square_id, position, is_done)
+      values (p_uid, free_id, 12, false);
+      pos := pos + 1;
+    end if;
+    select id into task_id from bingo_squares where label = p_tasks[j];
+    if task_id is null then
+      raise exception 'Task not found in bingo_squares: "%"', p_tasks[j];
+    end if;
+    insert into user_squares (user_id, square_id, position, is_done)
+    values (p_uid, task_id, pos, false);
+    pos := pos + 1;
+  end loop;
+end;
+$$ language plpgsql;
+
 do $$
 declare
   uid_yente   uuid := gen_random_uuid();
@@ -145,15 +171,6 @@ declare
     'Vraag een selfie met een vreemde alzof ie bekend is', 'Split the GG', 'stripclub visit', 'overtuig een dj om Belgische muziek te spelen'
   ];
 
-  -- internal
-  free_id  integer;
-  task_id  integer;
-  pos      integer;
-  i        integer;
-  tasks    text[];
-  uid      uuid;
-  uids     uuid[];
-  grids    text[][];
 begin
 
   -- Insert auth users
@@ -189,31 +206,18 @@ begin
     email_change_token_new = '', email_change = ''
   where email like '%@bingo.local';
 
-  -- Get free square id
-  select id into free_id from bingo_squares where label = 'Free vakje';
-
-  -- Helper to insert one user's grid
-  uids  := array[uid_yente, uid_sam, uid_wannes, uid_william, uid_joran, uid_floris, uid_jules, uid_levi, uid_matis, uid_robbe, uid_simon, uid_michiel];
-  grids := array[yente_tasks, sam_tasks, wannes_tasks, william_tasks, joran_tasks, floris_tasks, jules_tasks, levi_tasks, matis_tasks, robbe_tasks, simon_tasks, michiel_tasks];
-
-  for i in 1..12 loop
-    uid   := uids[i];
-    tasks := grids[i];
-    pos   := 0;
-
-    for j in 1..24 loop
-      -- Insert free square at position 12
-      if pos = 12 then
-        insert into user_squares (user_id, square_id, position, is_done)
-        values (uid, free_id, 12, false);
-        pos := pos + 1;
-      end if;
-
-      select id into task_id from bingo_squares where label = tasks[j];
-      insert into user_squares (user_id, square_id, position, is_done)
-      values (uid, task_id, pos, false);
-      pos := pos + 1;
-    end loop;
-  end loop;
+  -- Insert each user's grid explicitly (avoids PL/pgSQL 2D array issues)
+  perform insert_grid(uid_yente,   yente_tasks);
+  perform insert_grid(uid_sam,     sam_tasks);
+  perform insert_grid(uid_wannes,  wannes_tasks);
+  perform insert_grid(uid_william, william_tasks);
+  perform insert_grid(uid_joran,   joran_tasks);
+  perform insert_grid(uid_floris,  floris_tasks);
+  perform insert_grid(uid_jules,   jules_tasks);
+  perform insert_grid(uid_levi,    levi_tasks);
+  perform insert_grid(uid_matis,   matis_tasks);
+  perform insert_grid(uid_robbe,   robbe_tasks);
+  perform insert_grid(uid_simon,   simon_tasks);
+  perform insert_grid(uid_michiel, michiel_tasks);
 
 end $$;

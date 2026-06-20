@@ -1,8 +1,6 @@
--- Full task pool (50 tasks — no positions, just labels)
-truncate table user_squares;
-truncate table bingo_squares restart identity;
-
+-- Full task pool — includes Free vakje (used as center square for all grids)
 insert into bingo_squares (label) values
+  ('Free vakje'),
   ('win 10 euro in sportbed'),
   ('Breakfast beers'),
   ('We zijn iemand kwijt'),
