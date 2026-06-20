@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
 import {
   Card,
@@ -54,8 +55,9 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-background">
       <Card className="w-full max-w-sm">
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-center">🎯 Bingo</CardTitle>
+        <CardHeader className="space-y-1 items-center">
+          <Image src="/logo_expanded.png" alt="Dekerk 67" width={120} height={120} className="mb-2" />
+          <CardTitle className="text-2xl font-bold text-center">Dekerk 67 Bingo</CardTitle>
           <CardDescription className="text-center">
             Sign in with your username and PIN
           </CardDescription>

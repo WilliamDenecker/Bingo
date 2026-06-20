@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import Image from "next/image";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { calculateScore } from "@/lib/scoring";
@@ -70,6 +71,7 @@ export default async function LeaderboardPage() {
     <div className="min-h-screen pb-20">
       <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur">
         <div className="flex h-14 items-center px-4 max-w-md mx-auto">
+          <Image src="/logo.png" alt="Dekerk 67" width={44} height={44} className="rounded mr-2" />
           <Trophy className="h-5 w-5 mr-2 text-yellow-500" />
           <h1 className="font-semibold text-lg">Leaderboard</h1>
         </div>

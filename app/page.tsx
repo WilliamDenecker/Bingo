@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
 import { calculateScore } from "@/lib/scoring";
 import { BottomNav } from "@/components/BottomNav";
@@ -56,7 +57,10 @@ export default async function MyGridPage() {
     <div className="min-h-screen pb-20">
       <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur">
         <div className="flex h-14 items-center justify-between px-4 max-w-md mx-auto">
-          <h1 className="font-semibold text-lg">My Bingo</h1>
+          <div className="flex items-center gap-2">
+            <Image src="/logo.png" alt="Dekerk 67" width={44} height={44} className="rounded" />
+            <h1 className="font-semibold text-lg">My Bingo</h1>
+          </div>
           <div className="flex items-center gap-2">
             <Badge variant="secondary">{completedCount}/25 squares</Badge>
           </div>
