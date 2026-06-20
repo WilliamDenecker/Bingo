@@ -7,9 +7,9 @@ import { Badge } from "@/components/ui/badge";
 
 interface UserSquareRow {
   square_id: number;
+  position: number;
   is_done: boolean;
-  completed_at: string | null;
-  bingo_squares: { id: number; position: number; label: string };
+  bingo_squares: { id: number; label: string };
 }
 
 interface ProfileRow {
@@ -34,13 +34,13 @@ export default async function MyGridPage() {
 
   const { data: userSquaresRaw } = await supabase
     .from("user_squares")
-    .select("square_id, is_done, completed_at, bingo_squares(id, position, label)")
+    .select("square_id, position, is_done, bingo_squares(id, label)")
     .eq("user_id", user.id);
   const userSquares = (userSquaresRaw ?? []) as unknown as UserSquareRow[];
 
   const squares = userSquares.map((us) => ({
     id: us.bingo_squares.id,
-    position: us.bingo_squares.position,
+    position: us.position,
     label: us.bingo_squares.label,
     is_done: us.is_done,
   }));

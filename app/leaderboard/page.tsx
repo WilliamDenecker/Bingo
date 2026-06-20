@@ -14,8 +14,8 @@ interface ProfileRow {
 
 interface UserSquareRow {
   user_id: string;
+  position: number;
   is_done: boolean;
-  bingo_squares: { position: number };
 }
 
 interface PlayerEntry {
@@ -41,25 +41,19 @@ export default async function LeaderboardPage() {
 
   const { data: allUserSquaresRaw } = await supabase
     .from("user_squares")
-    .select("user_id, is_done, bingo_squares(position)");
+    .select("user_id, position, is_done");
   const allUserSquares = (allUserSquaresRaw ?? []) as unknown as UserSquareRow[];
 
   const squaresByUser = new Map<string, { position: number; is_done: boolean }[]>();
-
   for (const us of allUserSquares) {
     if (!squaresByUser.has(us.user_id)) squaresByUser.set(us.user_id, []);
-    squaresByUser.get(us.user_id)!.push({
-      position: us.bingo_squares.position,
-      is_done: us.is_done,
-    });
+    squaresByUser.get(us.user_id)!.push({ position: us.position, is_done: us.is_done });
   }
 
   const entries: PlayerEntry[] = profiles.map((p) => {
     const squares = squaresByUser.get(p.id) ?? [];
     const doneArray = Array(25).fill(false);
-    squares.forEach((s) => {
-      doneArray[s.position] = s.is_done;
-    });
+    squares.forEach((s) => { doneArray[s.position] = s.is_done; });
     return {
       userId: p.id,
       displayName: p.display_name,
@@ -86,16 +80,8 @@ export default async function LeaderboardPage() {
           const isMe = entry.userId === user.id;
           return (
             <Link key={entry.userId} href={`/users/${entry.userId}`}>
-              <div
-                className={`flex items-center gap-3 rounded-lg border p-3 transition-colors hover:bg-accent ${
-                  isMe ? "border-primary bg-primary/5" : ""
-                }`}
-              >
-                <span
-                  className={`w-6 text-center font-bold text-lg ${
-                    medalColors[i] ?? "text-muted-foreground"
-                  }`}
-                >
+              <div className={`flex items-center gap-3 rounded-lg border p-3 transition-colors hover:bg-accent ${isMe ? "border-primary bg-primary/5" : ""}`}>
+                <span className={`w-6 text-center font-bold text-lg ${medalColors[i] ?? "text-muted-foreground"}`}>
                   {i + 1}
                 </span>
                 <Avatar className="h-9 w-9">
@@ -106,26 +92,17 @@ export default async function LeaderboardPage() {
                 <div className="flex-1 min-w-0">
                   <p className="font-medium truncate">
                     {entry.displayName}
-                    {isMe && (
-                      <span className="ml-1 text-xs text-primary">(you)</span>
-                    )}
+                    {isMe && <span className="ml-1 text-xs text-primary">(you)</span>}
                   </p>
-                  <p className="text-xs text-muted-foreground">
-                    {entry.completedCount}/25 squares
-                  </p>
+                  <p className="text-xs text-muted-foreground">{entry.completedCount}/25 squares</p>
                 </div>
-                <Badge variant={isMe ? "default" : "secondary"}>
-                  {entry.score} pts
-                </Badge>
+                <Badge variant={isMe ? "default" : "secondary"}>{entry.score} pts</Badge>
               </div>
             </Link>
           );
         })}
-
         {entries.length === 0 && (
-          <p className="text-center text-muted-foreground py-8">
-            No players yet.
-          </p>
+          <p className="text-center text-muted-foreground py-8">No players yet.</p>
         )}
       </main>
 

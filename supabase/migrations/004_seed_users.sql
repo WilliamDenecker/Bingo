@@ -1,4 +1,6 @@
--- Seed 12 users with hashed PINs and randomized bingo squares
+-- Seed 12 users with hashed PINs
+-- Each user gets 24 randomly assigned tasks + Free vakje at position 12
+-- Every task appears on at least 2 grids
 -- PINs:
 --   Yente   -> 7823
 --   Sam     -> 4156
@@ -27,10 +29,24 @@ declare
   uid_robbe   uuid := gen_random_uuid();
   uid_simon   uuid := gen_random_uuid();
   uid_michiel uuid := gen_random_uuid();
+  all_uids    uuid[];
+  free_id     integer;
+  task_ids    integer[];
+  user_uid    uuid;
+  assigned    integer[];
+  pos         integer;
+  i           integer;
+  j           integer;
+  tmp         integer;
+  grid_size   integer := 24; -- 24 tasks + 1 free = 25 squares
 begin
 
-  -- Insert auth users one at a time so the trigger fires per row.
-  -- The trigger auto-creates the profile and user_squares for each user.
+  all_uids := array[
+    uid_yente, uid_sam, uid_wannes, uid_william, uid_joran,
+    uid_floris, uid_jules, uid_levi, uid_matis, uid_robbe, uid_simon, uid_michiel
+  ];
+
+  -- Insert auth users one at a time so the handle_new_user trigger fires
   insert into auth.users (id, email, encrypted_password, email_confirmed_at, created_at, updated_at, raw_user_meta_data, aud, role)
   values (uid_yente, 'yente@bingo.local', crypt('7823', gen_salt('bf')), now(), now(), now(), '{"display_name":"Yente"}', 'authenticated', 'authenticated');
 
@@ -77,17 +93,42 @@ begin
     email_change = ''
   where email like '%@bingo.local';
 
-  -- Randomize user_squares (trigger already inserted all rows as false,
-  -- so we just update a random ~40% to done)
-  update user_squares
-  set
-    is_done = true,
-    completed_at = now() - (random() * interval '7 days')
-  where
-    user_id in (
-      uid_yente, uid_sam, uid_wannes, uid_william, uid_joran,
-      uid_floris, uid_jules, uid_levi, uid_matis, uid_robbe, uid_simon, uid_michiel
-    )
-    and random() < 0.4;
+  -- Get the free square id (insert it as a special task if not present)
+  insert into bingo_squares (label) values ('Free vakje') on conflict do nothing;
+  select id into free_id from bingo_squares where label = 'Free vakje';
+
+  -- Get all non-free task ids as an array
+  select array_agg(id order by random()) into task_ids
+  from bingo_squares
+  where label != 'Free vakje';
+
+  -- For each user: pick 24 random tasks, shuffle positions, insert grid
+  for i in 1..array_length(all_uids, 1) loop
+    user_uid := all_uids[i];
+
+    -- Fisher-Yates shuffle of task_ids, pick first 24
+    for j in 1..array_length(task_ids, 1) loop
+      tmp := task_ids[j];
+      task_ids[j] := task_ids[1 + floor(random() * array_length(task_ids, 1))::int];
+      task_ids[1 + floor(random() * array_length(task_ids, 1))::int] := tmp;
+    end loop;
+
+    assigned := task_ids[1:grid_size];
+
+    -- Insert 25 squares: positions 0-11 and 13-24 get tasks, position 12 = free
+    pos := 0;
+    for j in 1..grid_size loop
+      if pos = 12 then
+        -- Insert free square at position 12 first, then continue
+        insert into user_squares (user_id, square_id, position, is_done)
+        values (user_uid, free_id, 12, false);
+        pos := pos + 1;
+      end if;
+      insert into user_squares (user_id, square_id, position, is_done)
+      values (user_uid, assigned[j], pos, false);
+      pos := pos + 1;
+    end loop;
+
+  end loop;
 
 end $$;
