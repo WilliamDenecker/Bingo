@@ -6,16 +6,19 @@ export type Database = {
           id: string;
           display_name: string;
           created_at: string;
+          avatar_url: string | null;
         };
         Insert: {
           id: string;
           display_name: string;
           created_at?: string;
+          avatar_url?: string | null;
         };
         Update: {
           id?: string;
           display_name?: string;
           created_at?: string;
+          avatar_url?: string | null;
         };
       };
       bingo_squares: {

@@ -1,13 +1,14 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { BottomNav } from "@/components/BottomNav";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SignOutButton } from "@/app/profile/SignOutButton";
+import { AvatarUpload } from "@/app/profile/AvatarUpload";
 
 interface ProfileRow {
   display_name: string;
   created_at: string;
+  avatar_url: string | null;
 }
 
 export default async function ProfilePage() {
@@ -21,7 +22,7 @@ export default async function ProfilePage() {
 
   const { data: profileRaw } = await supabase
     .from("profiles")
-    .select("display_name, created_at")
+    .select("display_name, created_at, avatar_url")
     .eq("id", user.id)
     .single();
   const profile = profileRaw as unknown as ProfileRow | null;
@@ -35,12 +36,11 @@ export default async function ProfilePage() {
       </header>
 
       <main className="px-4 py-6 max-w-md mx-auto space-y-4">
-        <div className="flex flex-col items-center gap-3 py-4">
-          <Avatar className="h-20 w-20">
-            <AvatarFallback className="text-2xl font-bold">
-              {profile?.display_name?.slice(0, 2).toUpperCase() ?? "?"}
-            </AvatarFallback>
-          </Avatar>
+        <AvatarUpload
+          displayName={profile?.display_name ?? "?"}
+          avatarUrl={profile?.avatar_url ?? null}
+        />
+        <div className="text-center -mt-2">
           <h2 className="text-xl font-semibold">{profile?.display_name}</h2>
           <p className="text-sm text-muted-foreground">
             Joined{" "}
@@ -48,6 +48,7 @@ export default async function ProfilePage() {
               ? new Date(profile.created_at).toLocaleDateString()
               : "—"}
           </p>
+          <p className="text-xs text-muted-foreground mt-1">Tap your avatar to change it</p>
         </div>
 
         <Card>

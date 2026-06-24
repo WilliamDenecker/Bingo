@@ -25,6 +25,7 @@ const migrations = [
   "../supabase/migrations/002_rls.sql",
   "../supabase/migrations/003_seed.sql",
   "../supabase/migrations/004_seed_users.sql",
+  "../supabase/migrations/005_avatar.sql",
 ];
 
 async function run() {
@@ -41,6 +42,12 @@ async function run() {
     drop policy if exists "user_squares_select"      on user_squares;
     drop policy if exists "user_squares_insert_own"  on user_squares;
     drop policy if exists "user_squares_update_own"  on user_squares;
+
+    -- Drop storage policies
+    drop policy if exists "avatars_insert_own"    on storage.objects;
+    drop policy if exists "avatars_update_own"    on storage.objects;
+    drop policy if exists "avatars_delete_own"    on storage.objects;
+    drop policy if exists "avatars_select_public" on storage.objects;
 
     -- Drop triggers and functions
     drop trigger if exists on_auth_user_created on auth.users;

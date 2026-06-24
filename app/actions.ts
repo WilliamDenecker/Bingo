@@ -3,6 +3,43 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 
+export async function uploadAvatar(formData: FormData) {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) throw new Error("Not authenticated");
+
+  const file = formData.get("avatar") as File | null;
+  if (!file || file.size === 0) throw new Error("No file provided");
+  if (file.size > 2 * 1024 * 1024) throw new Error("File must be under 2 MB");
+
+  const ext = file.name.split(".").pop()?.toLowerCase() ?? "jpg";
+  const path = `${user.id}/avatar.${ext}`;
+  const bytes = await file.arrayBuffer();
+
+  const { error: uploadError } = await supabase.storage
+    .from("avatars")
+    .upload(path, bytes, { contentType: file.type, upsert: true });
+
+  if (uploadError) throw new Error(uploadError.message);
+
+  const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(path);
+  const publicUrl = `${urlData.publicUrl}?t=${Date.now()}`;
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { error: updateError } = await (supabase.from("profiles") as any)
+    .update({ avatar_url: publicUrl })
+    .eq("id", user.id);
+
+  if (updateError) throw new Error(updateError.message);
+
+  revalidatePath("/profile");
+  revalidatePath("/leaderboard");
+}
+
 export async function toggleSquare(squareId: number, currentDone: boolean) {
   const supabase = await createClient();
 

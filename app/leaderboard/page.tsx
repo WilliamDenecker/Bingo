@@ -4,13 +4,14 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { calculateScore } from "@/lib/scoring";
 import { BottomNav } from "@/components/BottomNav";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Trophy } from "lucide-react";
 
 interface ProfileRow {
   id: string;
   display_name: string;
+  avatar_url: string | null;
 }
 
 interface UserSquareRow {
@@ -22,6 +23,7 @@ interface UserSquareRow {
 interface PlayerEntry {
   userId: string;
   displayName: string;
+  avatarUrl: string | null;
   score: number;
   completedCount: number;
 }
@@ -37,7 +39,7 @@ export default async function LeaderboardPage() {
 
   const { data: profilesRaw } = await supabase
     .from("profiles")
-    .select("id, display_name");
+    .select("id, display_name, avatar_url");
   const profiles = (profilesRaw ?? []) as unknown as ProfileRow[];
 
   const { data: allUserSquaresRaw } = await supabase
@@ -58,6 +60,7 @@ export default async function LeaderboardPage() {
     return {
       userId: p.id,
       displayName: p.display_name,
+      avatarUrl: p.avatar_url,
       score: calculateScore(doneArray),
       completedCount: doneArray.filter(Boolean).length,
     };
@@ -87,6 +90,7 @@ export default async function LeaderboardPage() {
                   {i + 1}
                 </span>
                 <Avatar className="h-9 w-9">
+                  {entry.avatarUrl && <AvatarImage src={entry.avatarUrl} alt={entry.displayName} />}
                   <AvatarFallback className="text-sm font-semibold">
                     {entry.displayName.slice(0, 2).toUpperCase()}
                   </AvatarFallback>

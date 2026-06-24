@@ -4,12 +4,13 @@ import { createClient } from "@/lib/supabase/server";
 import { calculateScore } from "@/lib/scoring";
 import { BingoGrid } from "@/components/BingoGrid";
 import { BottomNav } from "@/components/BottomNav";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { ChevronLeft } from "lucide-react";
 
 interface ProfileRow {
   display_name: string;
+  avatar_url: string | null;
 }
 
 interface UserSquareRow {
@@ -34,7 +35,7 @@ export default async function UserGridPage({
 
   const { data: profileRaw } = await supabase
     .from("profiles")
-    .select("display_name")
+    .select("display_name, avatar_url")
     .eq("id", params.userId)
     .single();
   const profile = profileRaw as unknown as ProfileRow | null;
@@ -67,6 +68,7 @@ export default async function UserGridPage({
             <ChevronLeft className="h-5 w-5" />
           </Link>
           <Avatar className="h-8 w-8">
+            {profile.avatar_url && <AvatarImage src={profile.avatar_url} alt={profile.display_name} />}
             <AvatarFallback className="text-xs font-semibold">
               {profile.display_name.slice(0, 2).toUpperCase()}
             </AvatarFallback>
