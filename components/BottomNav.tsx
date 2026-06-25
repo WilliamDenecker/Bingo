@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Grid3x3, Trophy, User } from "lucide-react";
+import { Grid3x3, Trophy, User, Rss } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   { href: "/", icon: Grid3x3, label: "My Grid" },
+  { href: "/feed", icon: Rss, label: "Activity" },
   { href: "/leaderboard", icon: Trophy, label: "Leaderboard" },
   { href: "/profile", icon: User, label: "Profile" },
 ];

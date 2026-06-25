@@ -42,18 +42,21 @@ export type Database = {
           square_id: number;
           is_done: boolean;
           completed_at: string | null;
+          proof_url: string | null;
         };
         Insert: {
           user_id: string;
           square_id: number;
           is_done?: boolean;
           completed_at?: string | null;
+          proof_url?: string | null;
         };
         Update: {
           user_id?: string;
           square_id?: number;
           is_done?: boolean;
           completed_at?: string | null;
+          proof_url?: string | null;
         };
       };
     };

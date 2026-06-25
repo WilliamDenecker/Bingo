@@ -2,7 +2,7 @@
 
 import { useTransition } from "react";
 import { BingoGrid, type BingoSquare } from "@/components/BingoGrid";
-import { toggleSquare } from "@/app/actions";
+import { toggleSquare, uploadProof } from "@/app/actions";
 
 interface MyGridClientProps {
   squares: BingoSquare[];
@@ -12,9 +12,15 @@ interface MyGridClientProps {
 export function MyGridClient({ squares, score }: MyGridClientProps) {
   const [isPending, startTransition] = useTransition();
 
-  function handleToggle(squareId: number, currentDone: boolean) {
-    startTransition(() => {
-      toggleSquare(squareId, currentDone);
+  function handleToggle(squareId: number, currentDone: boolean, proofFile?: File) {
+    startTransition(async () => {
+      let proofUrl: string | undefined;
+      if (!currentDone && proofFile) {
+        const fd = new FormData();
+        fd.append("proof", proofFile);
+        proofUrl = await uploadProof(squareId, fd);
+      }
+      await toggleSquare(squareId, currentDone, proofUrl);
     });
   }
 

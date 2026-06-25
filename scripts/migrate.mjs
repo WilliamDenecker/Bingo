@@ -26,6 +26,7 @@ const migrations = [
   "../supabase/migrations/003_seed.sql",
   "../supabase/migrations/004_seed_users.sql",
   "../supabase/migrations/005_avatar.sql",
+  "../supabase/migrations/006_proof.sql",
 ];
 
 async function run() {
@@ -48,6 +49,10 @@ async function run() {
     drop policy if exists "avatars_update_own"    on storage.objects;
     drop policy if exists "avatars_delete_own"    on storage.objects;
     drop policy if exists "avatars_select_public" on storage.objects;
+    drop policy if exists "proofs_insert_own"     on storage.objects;
+    drop policy if exists "proofs_update_own"     on storage.objects;
+    drop policy if exists "proofs_delete_own"     on storage.objects;
+    drop policy if exists "proofs_select_public"  on storage.objects;
 
     -- Drop triggers and functions
     drop trigger if exists on_auth_user_created on auth.users;

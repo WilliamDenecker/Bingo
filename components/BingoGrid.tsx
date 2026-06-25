@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { CheckCircle2, X } from "lucide-react";
+import { CheckCircle2, X, Camera, ImagePlus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getCompletedLines } from "@/lib/scoring";
 
@@ -14,7 +14,7 @@ export interface BingoSquare {
 
 interface BingoGridProps {
   squares: BingoSquare[];
-  onToggle?: (squareId: number, currentDone: boolean) => void;
+  onToggle?: (squareId: number, currentDone: boolean, proofFile?: File) => void;
 }
 
 export function BingoGrid({ squares, onToggle }: BingoGridProps) {
@@ -24,14 +24,29 @@ export function BingoGrid({ squares, onToggle }: BingoGridProps) {
   const completedPositions = new Set(completedLines.flat());
 
   const [expanded, setExpanded] = useState<BingoSquare | null>(null);
+  const [proofPreview, setProofPreview] = useState<string | null>(null);
+  const [proofFile, setProofFile] = useState<File | null>(null);
   const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const didLongPress = useRef(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  function openModal(square: BingoSquare) {
+    setExpanded(square);
+    setProofPreview(null);
+    setProofFile(null);
+  }
+
+  function closeModal() {
+    setExpanded(null);
+    setProofPreview(null);
+    setProofFile(null);
+  }
 
   function startLongPress(square: BingoSquare) {
     didLongPress.current = false;
     longPressTimer.current = setTimeout(() => {
       didLongPress.current = true;
-      setExpanded(square);
+      openModal(square);
     }, 400);
   }
 
@@ -40,8 +55,27 @@ export function BingoGrid({ squares, onToggle }: BingoGridProps) {
   }
 
   function handleClick(square: BingoSquare) {
-    if (didLongPress.current) return; // don't toggle on long press
-    onToggle?.(square.id, square.is_done);
+    if (didLongPress.current) return;
+    if (!onToggle) return;
+    // marking done → open modal for optional proof; unchecking → toggle immediately
+    if (!square.is_done) {
+      openModal(square);
+    } else {
+      onToggle(square.id, square.is_done);
+    }
+  }
+
+  function handleProofChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setProofFile(file);
+    setProofPreview(URL.createObjectURL(file));
+  }
+
+  function handleConfirm() {
+    if (!expanded || !onToggle) return;
+    onToggle(expanded.id, expanded.is_done, proofFile ?? undefined);
+    closeModal();
   }
 
   return (
@@ -60,7 +94,6 @@ export function BingoGrid({ squares, onToggle }: BingoGridProps) {
               onTouchEnd={cancelLongPress}
               onTouchCancel={cancelLongPress}
               onContextMenu={(e) => e.preventDefault()}
-              disabled={!onToggle && !true}
               className={cn(
                 "relative aspect-square flex flex-col items-center justify-center p-1 rounded-md border text-center transition-all duration-200 text-[10px] leading-tight font-medium select-none",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
@@ -81,15 +114,15 @@ export function BingoGrid({ squares, onToggle }: BingoGridProps) {
         })}
       </div>
 
-      {/* Long-press modal */}
+      {/* Square action modal */}
       {expanded && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-6"
-          onClick={() => setExpanded(null)}
+          className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 p-0 sm:items-center sm:p-6"
+          onClick={closeModal}
         >
           <div
             className={cn(
-              "relative w-full max-w-xs rounded-xl border p-6 text-center shadow-xl",
+              "relative w-full max-w-sm rounded-t-2xl sm:rounded-xl border p-6 shadow-xl",
               expanded.is_done
                 ? completedPositions.has(expanded.position)
                   ? "bg-yellow-400 border-yellow-500 text-yellow-900"
@@ -99,28 +132,67 @@ export function BingoGrid({ squares, onToggle }: BingoGridProps) {
             onClick={(e) => e.stopPropagation()}
           >
             <button
-              onClick={() => setExpanded(null)}
+              onClick={closeModal}
               className="absolute top-3 right-3 opacity-60 hover:opacity-100"
             >
               <X className="h-4 w-4" />
             </button>
+
             {expanded.is_done && (
               <CheckCircle2 className="mx-auto mb-3 h-8 w-8 opacity-80" />
             )}
-            <p className="text-lg font-semibold leading-snug">{expanded.label}</p>
+            <p className="text-lg font-semibold leading-snug text-center">{expanded.label}</p>
+
+            {/* Photo section — only shown when marking as done */}
+            {onToggle && !expanded.is_done && (
+              <div className="mt-4">
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  capture="environment"
+                  className="hidden"
+                  onChange={handleProofChange}
+                />
+                {proofPreview ? (
+                  <div className="relative mt-2">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={proofPreview}
+                      alt="Proof preview"
+                      className="w-full rounded-lg object-cover max-h-48"
+                    />
+                    <button
+                      onClick={() => { setProofPreview(null); setProofFile(null); }}
+                      className="absolute top-1 right-1 bg-black/60 rounded-full p-1"
+                    >
+                      <X className="h-3 w-3 text-white" />
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="mt-2 w-full flex items-center justify-center gap-2 rounded-lg border-2 border-dashed border-current opacity-60 hover:opacity-90 py-3 text-sm font-medium transition-opacity"
+                  >
+                    <ImagePlus className="h-4 w-4" />
+                    Add proof photo (optional)
+                  </button>
+                )}
+              </div>
+            )}
+
             {onToggle && (
               <button
-                onClick={() => {
-                  onToggle(expanded.id, expanded.is_done);
-                  setExpanded(null);
-                }}
+                onClick={handleConfirm}
                 className={cn(
-                  "mt-4 w-full rounded-md px-4 py-2 text-sm font-medium border transition-colors",
+                  "mt-4 w-full rounded-md px-4 py-2 text-sm font-medium border transition-colors flex items-center justify-center gap-2",
                   expanded.is_done
                     ? "border-current opacity-70 hover:opacity-100"
                     : "border-current opacity-70 hover:opacity-100"
                 )}
               >
+                {!expanded.is_done && proofFile && <Camera className="h-4 w-4" />}
                 {expanded.is_done ? "Mark as not done" : "Mark as done"}
               </button>
             )}
