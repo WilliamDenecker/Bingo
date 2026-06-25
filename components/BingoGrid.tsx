@@ -138,12 +138,12 @@ export function BingoGrid({ squares, onToggle }: BingoGridProps) {
       {/* Square action modal */}
       {expanded && (
         <div
-          className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 sm:items-center sm:p-6"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-6"
           onClick={closeModal}
         >
           <div
             className={cn(
-              "relative w-full max-w-sm rounded-t-2xl sm:rounded-xl border shadow-xl",
+              "relative w-full max-w-sm rounded-xl border shadow-xl",
               "flex flex-col max-h-[85dvh]",
               expanded.is_done
                 ? completedPositions.has(expanded.position)
