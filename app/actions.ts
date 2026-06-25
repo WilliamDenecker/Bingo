@@ -87,34 +87,3 @@ export async function toggleSquare(squareId: number, currentDone: boolean, proof
   revalidatePath("/feed");
 }
 
-export async function uploadProof(squareId: number, formData: FormData): Promise<string> {
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) throw new Error("Not authenticated");
-
-  const file = formData.get("proof") as File | null;
-  console.log("[uploadProof] file:", file?.name, file?.type, file?.size);
-  if (!file || file.size === 0) throw new Error("No file provided");
-  if (file.size > 50 * 1024 * 1024) throw new Error("File must be under 50 MB");
-
-  const ext = file.name.split(".").pop()?.toLowerCase() ?? "jpg";
-  const path = `${user.id}/${squareId}_${Date.now()}.${ext}`;
-  const bytes = await file.arrayBuffer();
-  console.log("[uploadProof] uploading to path:", path, "bytes:", bytes.byteLength);
-
-  const { error: uploadError } = await supabase.storage
-    .from("proofs")
-    .upload(path, bytes, { contentType: file.type, upsert: true });
-
-  console.log("[uploadProof] uploadError:", uploadError);
-  if (uploadError) throw new Error(uploadError.message);
-
-  const { data: urlData } = supabase.storage.from("proofs").getPublicUrl(path);
-  // Append mime type as a hint so the feed can render correctly without guessing
-  const mimeParam = encodeURIComponent(file.type);
-  return `${urlData.publicUrl}?mime=${mimeParam}`;
-}

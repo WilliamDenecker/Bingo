@@ -2,7 +2,8 @@
 
 import { useState, useTransition } from "react";
 import { BingoGrid, type BingoSquare } from "@/components/BingoGrid";
-import { toggleSquare, uploadProof } from "@/app/actions";
+import { toggleSquare } from "@/app/actions";
+import { createClient } from "@/lib/supabase/client";
 
 interface MyGridClientProps {
   squares: BingoSquare[];
@@ -17,16 +18,26 @@ export function MyGridClient({ squares, score }: MyGridClientProps) {
     setIsPending(true);
     try {
       let proofUrl: string | undefined;
+
       if (!currentDone && proofFile) {
-        console.log("[proof] uploading", proofFile.name, proofFile.type, proofFile.size);
-        const fd = new FormData();
-        fd.append("proof", proofFile);
-        proofUrl = await uploadProof(squareId, fd);
-        console.log("[proof] url:", proofUrl);
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) throw new Error("Not authenticated");
+
+        const ext = proofFile.name.split(".").pop()?.toLowerCase() ?? "bin";
+        const path = `${user.id}/${squareId}_${Date.now()}.${ext}`;
+
+        const { error } = await supabase.storage
+          .from("proofs")
+          .upload(path, proofFile, { contentType: proofFile.type, upsert: true });
+
+        if (error) throw new Error(error.message);
+
+        const { data: urlData } = supabase.storage.from("proofs").getPublicUrl(path);
+        proofUrl = `${urlData.publicUrl}?mime=${encodeURIComponent(proofFile.type)}`;
       }
-      console.log("[toggle] squareId:", squareId, "proofUrl:", proofUrl);
+
       await toggleSquare(squareId, currentDone, proofUrl);
-      console.log("[toggle] done");
     } catch (err) {
       console.error("[handleToggle] error:", err);
     } finally {
