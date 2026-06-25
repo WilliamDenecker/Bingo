@@ -111,5 +111,7 @@ export async function uploadProof(squareId: number, formData: FormData): Promise
   if (uploadError) throw new Error(uploadError.message);
 
   const { data: urlData } = supabase.storage.from("proofs").getPublicUrl(path);
-  return urlData.publicUrl;
+  // Append mime type as a hint so the feed can render correctly without guessing
+  const mimeParam = encodeURIComponent(file.type);
+  return `${urlData.publicUrl}?mime=${mimeParam}`;
 }

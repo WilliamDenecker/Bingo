@@ -81,8 +81,10 @@ export default async function FeedPage() {
                 {label}
               </p>
 
-              {row.proof_url && (
-                /\.(mp4|mov|webm|avi|mkv)(\?|$)/i.test(row.proof_url) ? (
+              {row.proof_url && (() => {
+                const mime = new URL(row.proof_url).searchParams.get("mime") ?? "";
+                const isVideo = mime.startsWith("video/") || /\.(mp4|mov|webm|avi|mkv)(\?|$)/i.test(row.proof_url);
+                return isVideo ? (
                   <video
                     src={row.proof_url}
                     controls
@@ -97,8 +99,8 @@ export default async function FeedPage() {
                     className="w-full rounded-lg object-cover max-h-72"
                     loading="lazy"
                   />
-                )
-              )}
+                );
+              })()}
             </div>
           );
         })}
