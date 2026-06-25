@@ -1,6 +1,6 @@
 "use client";
 
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { BingoGrid, type BingoSquare } from "@/components/BingoGrid";
 import { toggleSquare, uploadProof } from "@/app/actions";
 
@@ -10,10 +10,12 @@ interface MyGridClientProps {
 }
 
 export function MyGridClient({ squares, score }: MyGridClientProps) {
-  const [isPending, startTransition] = useTransition();
+  const [isPending, setIsPending] = useState(false);
+  const [, startTransition] = useTransition();
 
-  function handleToggle(squareId: number, currentDone: boolean, proofFile?: File) {
-    startTransition(async () => {
+  async function handleToggle(squareId: number, currentDone: boolean, proofFile?: File) {
+    setIsPending(true);
+    try {
       let proofUrl: string | undefined;
       if (!currentDone && proofFile) {
         const fd = new FormData();
@@ -21,7 +23,11 @@ export function MyGridClient({ squares, score }: MyGridClientProps) {
         proofUrl = await uploadProof(squareId, fd);
       }
       await toggleSquare(squareId, currentDone, proofUrl);
-    });
+    } finally {
+      setIsPending(false);
+      // trigger rerender via a no-op transition so Next.js picks up revalidation
+      startTransition(() => {});
+    }
   }
 
   return (
