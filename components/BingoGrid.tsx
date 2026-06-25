@@ -26,6 +26,7 @@ export function BingoGrid({ squares, onToggle }: BingoGridProps) {
   const [expanded, setExpanded] = useState<BingoSquare | null>(null);
   const [proofPreview, setProofPreview] = useState<string | null>(null);
   const [proofFile, setProofFile] = useState<File | null>(null);
+  const [proofError, setProofError] = useState<string | null>(null);
   const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const didLongPress = useRef(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -40,6 +41,7 @@ export function BingoGrid({ squares, onToggle }: BingoGridProps) {
     setExpanded(null);
     setProofPreview(null);
     setProofFile(null);
+    setProofError(null);
   }
 
   function startLongPress(square: BingoSquare) {
@@ -68,8 +70,27 @@ export function BingoGrid({ squares, onToggle }: BingoGridProps) {
   function handleProofChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
-    setProofFile(file);
-    setProofPreview(URL.createObjectURL(file));
+    setProofError(null);
+
+    if (file.type.startsWith("video/")) {
+      const url = URL.createObjectURL(file);
+      const video = document.createElement("video");
+      video.preload = "metadata";
+      video.onloadedmetadata = () => {
+        URL.revokeObjectURL(url);
+        if (video.duration > 10) {
+          setProofError("Video must be 10 seconds or shorter");
+          e.target.value = "";
+          return;
+        }
+        setProofFile(file);
+        setProofPreview(URL.createObjectURL(file));
+      };
+      video.src = url;
+    } else {
+      setProofFile(file);
+      setProofPreview(URL.createObjectURL(file));
+    }
   }
 
   function handleConfirm() {
@@ -149,35 +170,47 @@ export function BingoGrid({ squares, onToggle }: BingoGridProps) {
                 <input
                   ref={fileInputRef}
                   type="file"
-                  accept="image/*"
-                  capture="environment"
+                  accept="image/*,video/*"
                   className="hidden"
                   onChange={handleProofChange}
                 />
                 {proofPreview ? (
                   <div className="relative mt-2">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={proofPreview}
-                      alt="Proof preview"
-                      className="w-full rounded-lg object-cover max-h-48"
-                    />
+                    {proofFile?.type.startsWith("video/") ? (
+                      <video
+                        src={proofPreview}
+                        controls
+                        className="w-full rounded-lg max-h-48"
+                      />
+                    ) : (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={proofPreview}
+                        alt="Proof preview"
+                        className="w-full rounded-lg object-cover max-h-48"
+                      />
+                    )}
                     <button
-                      onClick={() => { setProofPreview(null); setProofFile(null); }}
+                      onClick={() => { setProofPreview(null); setProofFile(null); setProofError(null); }}
                       className="absolute top-1 right-1 bg-black/60 rounded-full p-1"
                     >
                       <X className="h-3 w-3 text-white" />
                     </button>
                   </div>
                 ) : (
-                  <button
-                    type="button"
-                    onClick={() => fileInputRef.current?.click()}
-                    className="mt-2 w-full flex items-center justify-center gap-2 rounded-lg border-2 border-dashed border-current opacity-60 hover:opacity-90 py-3 text-sm font-medium transition-opacity"
-                  >
-                    <ImagePlus className="h-4 w-4" />
-                    Add proof photo (optional)
-                  </button>
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="mt-2 w-full flex items-center justify-center gap-2 rounded-lg border-2 border-dashed border-current opacity-60 hover:opacity-90 py-3 text-sm font-medium transition-opacity"
+                    >
+                      <ImagePlus className="h-4 w-4" />
+                      Add photo or video (optional)
+                    </button>
+                    {proofError && (
+                      <p className="mt-1 text-xs text-red-500 text-center">{proofError}</p>
+                    )}
+                  </>
                 )}
               </div>
             )}

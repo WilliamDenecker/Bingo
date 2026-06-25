@@ -80,7 +80,7 @@ export async function uploadProof(squareId: number, formData: FormData): Promise
 
   const file = formData.get("proof") as File | null;
   if (!file || file.size === 0) throw new Error("No file provided");
-  if (file.size > 5 * 1024 * 1024) throw new Error("File must be under 5 MB");
+  if (file.size > 50 * 1024 * 1024) throw new Error("File must be under 50 MB");
 
   const ext = file.name.split(".").pop()?.toLowerCase() ?? "jpg";
   const path = `${user.id}/${squareId}_${Date.now()}.${ext}`;

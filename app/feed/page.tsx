@@ -82,13 +82,22 @@ export default async function FeedPage() {
               </p>
 
               {row.proof_url && (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={row.proof_url}
-                  alt={`Proof for ${label}`}
-                  className="w-full rounded-lg object-cover max-h-72"
-                  loading="lazy"
-                />
+                /\.(mp4|mov|webm|avi|mkv)(\?|$)/i.test(row.proof_url) ? (
+                  <video
+                    src={row.proof_url}
+                    controls
+                    playsInline
+                    className="w-full rounded-lg max-h-72"
+                  />
+                ) : (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={row.proof_url}
+                    alt={`Proof for ${label}`}
+                    className="w-full rounded-lg object-cover max-h-72"
+                    loading="lazy"
+                  />
+                )
               )}
             </div>
           );
