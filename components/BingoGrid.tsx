@@ -35,6 +35,7 @@ export function BingoGrid({ squares, onToggle }: BingoGridProps) {
     setExpanded(square);
     setProofPreview(null);
     setProofFile(null);
+    setProofError(null);
   }
 
   function closeModal() {
@@ -59,7 +60,6 @@ export function BingoGrid({ squares, onToggle }: BingoGridProps) {
   function handleClick(square: BingoSquare) {
     if (didLongPress.current) return;
     if (!onToggle) return;
-    // marking done → open modal for optional proof; unchecking → toggle immediately
     if (!square.is_done) {
       openModal(square);
     } else {
@@ -138,12 +138,13 @@ export function BingoGrid({ squares, onToggle }: BingoGridProps) {
       {/* Square action modal */}
       {expanded && (
         <div
-          className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 p-0 sm:items-center sm:p-6"
+          className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 sm:items-center sm:p-6"
           onClick={closeModal}
         >
           <div
             className={cn(
-              "relative w-full max-w-sm rounded-t-2xl sm:rounded-xl border p-6 shadow-xl",
+              "relative w-full max-w-sm rounded-t-2xl sm:rounded-xl border shadow-xl",
+              "flex flex-col max-h-[85dvh]",
               expanded.is_done
                 ? completedPositions.has(expanded.position)
                   ? "bg-yellow-400 border-yellow-500 text-yellow-900"
@@ -152,82 +153,96 @@ export function BingoGrid({ squares, onToggle }: BingoGridProps) {
             )}
             onClick={(e) => e.stopPropagation()}
           >
+            {/* Close button */}
             <button
               onClick={closeModal}
-              className="absolute top-3 right-3 opacity-60 hover:opacity-100"
+              className="absolute top-3 right-3 opacity-60 hover:opacity-100 z-10"
             >
               <X className="h-4 w-4" />
             </button>
 
-            {expanded.is_done && (
-              <CheckCircle2 className="mx-auto mb-3 h-8 w-8 opacity-80" />
-            )}
-            <p className="text-lg font-semibold leading-snug text-center">{expanded.label}</p>
+            {/* Scrollable content area */}
+            <div className="overflow-y-auto flex-1 p-6">
+              {expanded.is_done && (
+                <CheckCircle2 className="mx-auto mb-3 h-8 w-8 opacity-80" />
+              )}
+              <p className="text-lg font-semibold leading-snug text-center pr-6">
+                {expanded.label}
+              </p>
 
-            {/* Photo section — only shown when marking as done */}
-            {onToggle && !expanded.is_done && (
-              <div className="mt-4">
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*,video/*"
-                  className="hidden"
-                  onChange={handleProofChange}
-                />
-                {proofPreview ? (
-                  <div className="relative mt-2">
-                    {proofFile?.type.startsWith("video/") ? (
-                      <video
-                        src={proofPreview}
-                        controls
-                        className="w-full rounded-lg max-h-48"
-                      />
-                    ) : (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={proofPreview}
-                        alt="Proof preview"
-                        className="w-full rounded-lg object-cover max-h-48"
-                      />
-                    )}
-                    <button
-                      onClick={() => { setProofPreview(null); setProofFile(null); setProofError(null); }}
-                      className="absolute top-1 right-1 bg-black/60 rounded-full p-1"
-                    >
-                      <X className="h-3 w-3 text-white" />
-                    </button>
-                  </div>
-                ) : (
-                  <>
-                    <button
-                      type="button"
-                      onClick={() => fileInputRef.current?.click()}
-                      className="mt-2 w-full flex items-center justify-center gap-2 rounded-lg border-2 border-dashed border-current opacity-60 hover:opacity-90 py-3 text-sm font-medium transition-opacity"
-                    >
-                      <ImagePlus className="h-4 w-4" />
-                      Add photo or video (optional)
-                    </button>
-                    {proofError && (
-                      <p className="mt-1 text-xs text-red-500 text-center">{proofError}</p>
-                    )}
-                  </>
-                )}
-              </div>
-            )}
+              {/* Photo/video picker — only when marking as done */}
+              {onToggle && !expanded.is_done && (
+                <div className="mt-4">
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*,video/*"
+                    className="hidden"
+                    onChange={handleProofChange}
+                  />
+                  {proofPreview ? (
+                    <div className="relative mt-2">
+                      {proofFile?.type.startsWith("video/") ? (
+                        <video
+                          src={proofPreview}
+                          controls
+                          className="w-full rounded-lg max-h-48"
+                        />
+                      ) : (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={proofPreview}
+                          alt="Proof preview"
+                          className="w-full rounded-lg object-cover max-h-48"
+                        />
+                      )}
+                      <button
+                        onClick={() => {
+                          setProofPreview(null);
+                          setProofFile(null);
+                          setProofError(null);
+                        }}
+                        className="absolute top-1 right-1 bg-black/60 rounded-full p-1"
+                      >
+                        <X className="h-3 w-3 text-white" />
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="mt-2 w-full flex items-center justify-center gap-2 rounded-lg border-2 border-dashed border-current opacity-60 hover:opacity-90 py-3 text-sm font-medium transition-opacity"
+                      >
+                        <ImagePlus className="h-4 w-4" />
+                        Add photo or video (optional)
+                      </button>
+                      {proofError && (
+                        <p className="mt-1 text-xs text-red-500 text-center">{proofError}</p>
+                      )}
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
 
+            {/* Confirm button — pinned at bottom, always visible */}
             {onToggle && (
-              <button
-                onClick={handleConfirm}
-                className={cn(
-                  "mt-4 w-full rounded-md px-4 py-2 text-sm font-medium border transition-colors flex items-center justify-center gap-2",
-                  expanded.is_done
-                    ? "border-current opacity-70 hover:opacity-100"
-                    : "border-current opacity-70 hover:opacity-100"
-                )}
-              >
-                {!expanded.is_done && proofFile && <Camera className="h-4 w-4" />}
-                {expanded.is_done ? "Mark as not done" : "Mark as done"}
-              </button>
+              <div className="shrink-0 px-6 pb-6 pt-2">
+                <button
+                  onClick={handleConfirm}
+                  className={cn(
+                    "w-full rounded-md px-4 py-3 text-sm font-medium border transition-colors",
+                    "flex items-center justify-center gap-2",
+                    expanded.is_done
+                      ? "border-current opacity-70 hover:opacity-100"
+                      : "border-current opacity-70 hover:opacity-100"
+                  )}
+                >
+                  {!expanded.is_done && proofFile && <Camera className="h-4 w-4" />}
+                  {expanded.is_done ? "Mark as not done" : "Mark as done"}
+                </button>
+              </div>
             )}
           </div>
         </div>
