@@ -18,14 +18,19 @@ export function MyGridClient({ squares, score }: MyGridClientProps) {
     try {
       let proofUrl: string | undefined;
       if (!currentDone && proofFile) {
+        console.log("[proof] uploading", proofFile.name, proofFile.type, proofFile.size);
         const fd = new FormData();
         fd.append("proof", proofFile);
         proofUrl = await uploadProof(squareId, fd);
+        console.log("[proof] url:", proofUrl);
       }
+      console.log("[toggle] squareId:", squareId, "proofUrl:", proofUrl);
       await toggleSquare(squareId, currentDone, proofUrl);
+      console.log("[toggle] done");
+    } catch (err) {
+      console.error("[handleToggle] error:", err);
     } finally {
       setIsPending(false);
-      // trigger rerender via a no-op transition so Next.js picks up revalidation
       startTransition(() => {});
     }
   }
