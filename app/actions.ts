@@ -52,6 +52,24 @@ export async function toggleSquare(squareId: number, currentDone: boolean, proof
   const newDone = !currentDone;
   const completedAt = newDone ? new Date().toISOString() : null;
 
+  // When unchecking, delete the proof file from storage if one exists
+  if (!newDone) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: existing } = await (supabase.from("user_squares") as any)
+      .select("proof_url")
+      .eq("user_id", user.id)
+      .eq("square_id", squareId)
+      .single();
+
+    if (existing?.proof_url) {
+      // Extract the storage path from the public URL: everything after "/proofs/"
+      const match = (existing.proof_url as string).match(/\/proofs\/(.+?)(\?|$)/);
+      if (match) {
+        await supabase.storage.from("proofs").remove([decodeURIComponent(match[1])]);
+      }
+    }
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { error } = await (supabase.from("user_squares") as any)
     .update({

@@ -1,4 +1,5 @@
 import pg from "pg";
+import { createClient } from "@supabase/supabase-js";
 import { readFileSync } from "fs";
 import { config } from "dotenv";
 import { resolve, dirname } from "path";
@@ -18,6 +19,14 @@ if (!connectionString) {
   process.exit(1);
 }
 
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const storageAdmin = supabaseUrl && serviceRoleKey
+  ? createClient(supabaseUrl, serviceRoleKey, {
+      realtime: { transport: (await import("ws")).default },
+    })
+  : null;
+
 const client = new pg.Client({ connectionString, ssl: { rejectUnauthorized: false } });
 
 const migrations = [
@@ -32,6 +41,28 @@ const migrations = [
 async function run() {
   await client.connect();
   console.log("✅ Connected to database\n");
+
+  // Delete all files from storage buckets via Storage API
+  if (storageAdmin) {
+    process.stdout.write("🗑️  Clearing storage buckets...");
+    for (const bucket of ["avatars", "proofs"]) {
+      const { data: files } = await storageAdmin.storage.from(bucket).list("", { limit: 1000 });
+      if (files && files.length > 0) {
+        const paths = files.map((f) => f.name);
+        await storageAdmin.storage.from(bucket).remove(paths);
+        // Also clear any user sub-folders
+        for (const folder of files.filter((f) => !f.metadata)) {
+          const { data: sub } = await storageAdmin.storage.from(bucket).list(folder.name, { limit: 1000 });
+          if (sub && sub.length > 0) {
+            await storageAdmin.storage.from(bucket).remove(sub.map((f) => `${folder.name}/${f.name}`));
+          }
+        }
+      }
+    }
+    console.log(" ✅");
+  } else {
+    console.warn("⚠️  SUPABASE_SERVICE_ROLE_KEY not set — storage files not deleted (add it to .env.local)");
+  }
 
   // Full reset — drop everything so migrations run clean
   console.log("🗑️  Resetting existing data...");
