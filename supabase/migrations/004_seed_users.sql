@@ -58,13 +58,13 @@ declare
     -- position 12 = Free vakje (auto)
     'Op één dag op 4 verschillende locaties een pint drinken', 'Een seksspeeltje kopen', 'Een tactisch fapje', 'Een adjesestafette doen, minimaal 3 vs 3',
     'Robbe wakker maken', 'Op de toog dansen', 'Een adje doen met je broek op je enkels (in het openbaar)', 'Minstens 0.5m aan spullen op iemand stapelen',
-    'Een potje Brawl Stars spelen in de club', 'In een fontein of vijver gaan', 'Singles: je mama of papa bellen en zeggen dat je de liefde van je leven hebt ontmoet', 'Een potje Clash Royale winnen tegen Joran'
+    'Een potje Brawl Stars spelen in de club', 'In een fontein of vijver gaan', 'Je mama of papa bellen en zeggen dat je de liefde van je leven hebt ontmoet', 'Een potje Clash Royale winnen tegen Joran'
   ];
 
   sam_tasks text[] := array[
     'Een dance battle doen met een vreemde in de club', 'Blaffen naar vreemden', 'Airport beers', 'koop een kraslotje op het vliegtuig (als ze niet verkopen: Win 10 euro op sport bed)',
     'Een adjesestafette doen, minimaal 3 vs 3', 'Iemand gaat op uitstap met een dame', 'Een seksspeeltje kopen', 'Op de toog dansen',
-    'Een Belgisch biertje drinken in Praag', 'Een souvenir kopen', 'Robbe wakker maken', 'Een potje Brawl Stars spelen in de club',
+    'De waarborg van het appartement verliezen', 'Een souvenir kopen', 'Robbe wakker maken', 'Een potje Brawl Stars spelen in de club',
     -- position 12 = Free vakje (auto)
     'Yente een compleet absurd verhaal laten geloven', 'Een tactisch fapje', 'In een fontein of vijver gaan', 'Een potje Clash Royale winnen tegen Joran',
     'Een Irish goodbye doen', 'Applaudisseren wanneer het vliegtuig landt', 'Ragebait iemand succesvol', 'Alcohol drinken vóór 10:00 uur',
@@ -73,7 +73,7 @@ declare
 
   wannes_tasks text[] := array[
     'Een DJ overtuigen om Belgische muziek te spelen', 'Een adje doen met je broek op je enkels (in het openbaar)', 'Airport beers', 'Een adjesestafette doen, minimaal 3 vs 3',
-    'Alcohol drinken vóór 10:00 uur', 'Uit een café worden buitengezet', 'Iemand verliest zijn gsm', 'koop een kraslotje op het vliegtuig (als ze niet verkopen: Win 10 euro op sport bed)',
+    'Alcohol drinken vóór 10:00 uur', 'Een liefdesverklaring doen', 'Iemand verliest zijn gsm', 'koop een kraslotje op het vliegtuig (als ze niet verkopen: Win 10 euro op sport bed)',
     '€10 winnen op Sportbet', 'Een potje Brawl Stars spelen in de club', 'Happy Birthday zingen voor een vreemde', 'Een Belgisch biertje drinken in Praag',
     -- position 12 = Free vakje (auto)
     'We zijn iemand van de groep kwijt', 'Yente een compleet absurd verhaal laten geloven', 'Een stripclub bezoeken', 'In een fontein of vijver gaan',
@@ -83,18 +83,18 @@ declare
 
   william_tasks text[] := array[
     'Een adjesestafette doen, minimaal 3 vs 3', '10 toertijes tond een borstel/stok draaien tot je duizelig bent en daarna een pint adten', 'Een Irish goodbye doen', 'Airport beers',
-    'In een fontein of vijver gaan', 'Een selfie nemen met random mensen', 'Iemand gaat op uitstap met een dame', 'Een dance battle doen met een vreemde in de club',
-    'De zon zien opkomen', 'koop een kraslotje op het vliegtuig (als ze niet verkopen: Win 10 euro op sport bed)', '€10 winnen op Sportbet', 'Een bierflesje op 5 verschillende manieren openen',
+    'Glas stelen uit een café', 'Een selfie nemen met random mensen', 'Iemand gaat op uitstap met een dame', 'Een dance battle doen met een vreemde in de club',
+    'De zon zien opkomen', 'Een tactisch fapje', '€10 winnen op Sportbet', 'Een bierflesje op 5 verschillende manieren openen',
     -- position 12 = Free vakje (auto)
     'Iemand verliest zijn sleutels', 'Applaudisseren wanneer het vliegtuig landt', 'Roulette spelen (minimale inzet 10 euro)', 'Le Lac du Connemara inzetten',
     'Een seksspeeltje kopen', 'Ragebait iemand succesvol', 'Een adje doen met je broek op je enkels (in het openbaar)', 'Een souvenir kopen',
-    'Een potje Clash Royale winnen tegen Joran', 'De driesprong doen', 'Split the G', 'Een potje Brawl Stars spelen in de club'
+    'Op één dag op 4 verschillende locaties een pint drinken', 'De driesprong doen', 'Split the G', 'Een potje Brawl Stars spelen in de club'
   ];
 
   joran_tasks text[] := array[
     '€10 winnen op Sportbet', 'Doe de Joran Lloret-dansmoves bij de huzz', 'Iemand gaat op uitstap met een dame', 'Airport beers',
     'Een souvenir kopen', 'Blaffen naar vreemden', 'Een Irish goodbye doen', 'Een seksspeeltje kopen',
-    'Singles: je mama of papa bellen en zeggen dat je de liefde van je leven hebt ontmoet', 'Split the G', 'Een bierflesje op 5 verschillende manieren openen', 'Een Belgisch biertje drinken in Praag',
+    'Een openingszin uitproberen gekozen door de groep', 'Split the G', 'Een bierflesje op 5 verschillende manieren openen', 'Een Belgisch biertje drinken in Praag',
     -- position 12 = Free vakje (auto)
     'We zijn iemand van de groep kwijt', 'Een badkamerfissa houden', 'Een stripclub bezoeken', 'Drie of meer keren fastfood eten binnen 24 uur',
     '10 toertijes tond een borstel/stok draaien tot je duizelig bent en daarna een pint adten', 'Een potje Brawl Stars spelen in de club', 'In een fontein of vijver gaan', 'Ragebait iemand succesvol',
@@ -132,7 +132,7 @@ declare
   ];
 
   matis_tasks text[] := array[
-    'Singles: je mama of papa bellen en zeggen dat je de liefde van je leven hebt ontmoet', 'Een openingszin uitproberen gekozen door de groep', 'Airport beers', 'Een Belgisch biertje drinken in Praag',
+    'Je mama of papa bellen en zeggen dat je de liefde van je leven hebt ontmoet', 'Een openingszin uitproberen gekozen door de groep', 'Airport beers', 'Een Belgisch biertje drinken in Praag',
     '10 toertijes tond een borstel/stok draaien tot je duizelig bent en daarna een pint adten', 'Doe de Joran Lloret-dansmoves bij de huzz', 'Een DJ overtuigen om Belgische muziek te spelen', 'koop een kraslotje op het vliegtuig (als ze niet verkopen: Win 10 euro op sport bed)',
     'Een Irish goodbye doen', 'Een tactisch fapje', 'Een adje doen met je broek op je enkels (in het openbaar)', '€10 winnen op Sportbet',
     -- position 12 = Free vakje (auto)
@@ -143,8 +143,8 @@ declare
 
   robbe_tasks text[] := array[
     '€10 winnen op Sportbet', 'Een DJ overtuigen om Belgische muziek te spelen', 'Airport beers', 'Deel waarborg van het  appartement verliezen',
-    'Minstens 0.5m aan spullen op iemand stapelen', 'Singles: je mama of papa bellen en zeggen dat je de liefde van je leven hebt ontmoet', 'Een badkamerfissa houden', 'Applaudisseren wanneer het vliegtuig landt',
-    'Een adjesestafette doen, minimaal 3 vs 3', 'Een liefdesverklaring doen', 'Iemand verliest zijn sleutels', 'Op de toog dansen',
+    'Minstens 0.5m aan spullen op iemand stapelen', 'Je mama of papa bellen en zeggen dat je de liefde van je leven hebt ontmoet', 'Een badkamerfissa houden', 'Applaudisseren wanneer het vliegtuig landt',
+    'Een adjesestafette doen, minimaal 3 vs 3', 'Een openingszin uitproberen gekozen door de groep', 'Iemand verliest zijn sleutels', 'Op de toog dansen',
     -- position 12 = Free vakje (auto)
     'Een souvenir kopen', 'Alcohol drinken vóór 10:00 uur', 'Breakfast beers', '10 toertijes tond een borstel/stok draaien tot je duizelig bent en daarna een pint adten',
     'Een tactisch fapje', 'Yente een compleet absurd verhaal laten geloven', 'Ragebait iemand succesvol', 'In een fontein of vijver gaan',

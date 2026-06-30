@@ -2,7 +2,7 @@
 insert into bingo_squares (label) values
   ('Free vakje'),
   ('Uit een café worden buitengezet'),
-  ('Singles: je mama of papa bellen en zeggen dat je de liefde van je leven hebt ontmoet'),
+  ('Je mama of papa bellen en zeggen dat je de liefde van je leven hebt ontmoet'),
   ('Deel waarborg van het  appartement verliezen'),
   ('Op de toog dansen'),
   ('In een fontein of vijver gaan'),
@@ -59,4 +59,5 @@ insert into bingo_squares (label) values
   ('Een tactisch fapje'),
   ('Applaudisseren wanneer het vliegtuig landt'),
   ('Split the G'),
+  ('De waarborg van het appartement verliezen'),
   ('Drie of meer keren fastfood eten binnen 24 uur');
