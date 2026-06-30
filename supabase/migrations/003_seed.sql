@@ -37,7 +37,7 @@ insert into bingo_squares (label) values
   ('Een potje Clash Royale winnen tegen Joran'),
   ('Een seksspeeltje kopen'),
   ('In een dame haar DM''s sliden'),
-  ('Een groep van 67 mensen/kinderen "67" laten doen'),
+  ('Een groep van mensen/kinderen "67" laten doen'),
   ('Minstens 0.5m aan spullen op iemand stapelen'),
   ('Yente een compleet absurd verhaal laten geloven'),
   ('Iemand de weg vragen en daarna bewust de andere kant uit wandelen'),
@@ -60,4 +60,5 @@ insert into bingo_squares (label) values
   ('Applaudisseren wanneer het vliegtuig landt'),
   ('Split the G'),
   ('De waarborg van het appartement verliezen'),
+  ('Helmet bar expaerience'),
   ('Drie of meer keren fastfood eten binnen 24 uur');
