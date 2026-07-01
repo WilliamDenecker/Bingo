@@ -6,7 +6,7 @@ insert into bingo_squares (label) values
   ('De waarborg van het appartement verliezen'),
   ('Op de toog dansen'),
   ('In een fontein of vijver gaan'),
-  ('Een stripclub bezoeken'),
+  ('Een blote tetten bar bezoeken'),
   ('Simon rookt een wietje'),
   ('Floris vindt een Fransman'),
   ('Een openingszin uitproberen gekozen door de groep'),

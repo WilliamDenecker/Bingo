@@ -76,7 +76,7 @@ declare
     'Alcohol drinken vóór 10:00 uur', 'Een liefdesverklaring doen', 'Iemand verliest zijn gsm', 'koop een kraslotje op het vliegtuig (als ze niet verkopen: Win 10 euro op sport bet)',
     'YMCA aanvragen en meedoen in een club', 'Een potje Brawl Stars spelen in de club', 'Happy Birthday zingen voor een vreemde', 'Een Belgisch biertje drinken in Praag',
     -- position 12 = Free vakje (auto)
-    'Breakfast beers', 'Een badkamerfissa houden', 'Een stripclub bezoeken', 'In een fontein of vijver gaan',
+    'Breakfast beers', 'Een badkamerfissa houden', 'Een blote tetten bar bezoeken', 'In een fontein of vijver gaan',
     'Split the G', 'Applaudisseren wanneer het vliegtuig landt', 'Een polonaise meedoen in de club', 'Een souvenir kopen',
     'Een bierflesje op 5 verschillende manieren openen', 'Drie of meer keren fastfood eten binnen 24 uur', 'Een tactisch fapje', 'Iemand de weg vragen en daarna bewust de andere kant uit wandelen'
   ];
@@ -86,7 +86,7 @@ declare
     'Glas stelen uit een café', 'Een selfie nemen met random mensen', 'Alcohol drinken vóór 10:00 uur', 'Een dance battle doen met een vreemde in de club',
     'De zon zien opkomen', 'Een tactisch fapje', '€10 winnen op Sportbet', 'Een bierflesje op 5 verschillende manieren openen',
     -- position 12 = Free vakje (auto)
-    'Een stripclub bezoeken', 'Applaudisseren wanneer het vliegtuig landt', 'Roulette spelen (minimale inzet 10 euro)', 'Le Lac du Connemara inzetten',
+    'Een blote tetten bar bezoeken', 'Applaudisseren wanneer het vliegtuig landt', 'Roulette spelen (minimale inzet 10 euro)', 'Le Lac du Connemara inzetten',
     'Een seksspeeltje kopen', 'Ragebait iemand succesvol', 'Een adje doen met je broek op je enkels (in het openbaar)', 'Een souvenir kopen',
     'Op één dag op 4 verschillende locaties een pint drinken', 'De driesprong doen', 'Split the G', 'Een potje Brawl Stars spelen in de club'
   ];
@@ -106,7 +106,7 @@ declare
     'Een groep van mensen/kinderen "67" laten doen', 'Iemand de weg vragen en daarna bewust de andere kant uit wandelen', 'Op de toog dansen', 'Een seksspeeltje kopen',
     'Alcohol drinken vóór 10:00 uur', 'Split the G', 'Roulette spelen (minimale inzet 10 euro)', 'Een bierflesje op 5 verschillende manieren openen',
     -- position 12 = Free vakje (auto)
-    'Een stripclub bezoeken', 'Yente een compleet absurd verhaal laten geloven', '10 toertjes tond een borstel/stok draaien tot je duizelig bent en daarna een pint adten', 'Een polonaise meedoen in de club',
+    'Een blote tetten bar bezoeken', 'Yente een compleet absurd verhaal laten geloven', '10 toertjes tond een borstel/stok draaien tot je duizelig bent en daarna een pint adten', 'Een polonaise meedoen in de club',
     'De driesprong doen', 'Drie of meer keren fastfood eten binnen 24 uur', 'Een adjesestafette doen, minimaal 3 vs 3', 'Glas stelen uit een café',
     'We zijn iemand van de groep kwijt', 'Applaudisseren wanneer het vliegtuig landt', 'Een potje Brawl Stars spelen in de club', 'Op één dag op 4 verschillende locaties een pint drinken'
   ];
@@ -136,7 +136,7 @@ declare
     '10 toertjes tond een borstel/stok draaien tot je duizelig bent en daarna een pint adten', 'Doe de Joran Lloret-dansmoves bij de huzz', 'Een DJ overtuigen om Belgische muziek te spelen', 'koop een kraslotje op het vliegtuig (als ze niet verkopen: Win 10 euro op sport bet)',
     'Een polonaise meedoen in de club', 'Een tactisch fapje', 'Een adje doen met je broek op je enkels (in het openbaar)', '€10 winnen op Sportbet',
     -- position 12 = Free vakje (auto)
-    'Iemand verliest zijn sleutels', 'Alcohol drinken vóór 10:00 uur', 'Een stripclub bezoeken', 'Glas stelen uit een café',
+    'Iemand verliest zijn sleutels', 'Alcohol drinken vóór 10:00 uur', 'Een blote tetten bar bezoeken', 'Glas stelen uit een café',
     'Een seksspeeltje kopen', 'Split the G', 'Roulette spelen (minimale inzet 10 euro)', 'Yente een compleet absurd verhaal laten geloven',
     'Breakfast beers', 'Een adjesestafette doen, minimaal 3 vs 3', 'Simon rookt een wietje', 'Op één dag op 4 verschillende locaties een pint drinken'
   ];
@@ -148,7 +148,7 @@ declare
     -- position 12 = Free vakje (auto)
     'Een souvenir kopen', 'Alcohol drinken vóór 10:00 uur', 'Breakfast beers', 'Aan iemand met een hond vragen of je hem mag aaien en vervolgens de eigenaar aaien',
     'Een tactisch fapje', 'Yente een compleet absurd verhaal laten geloven', 'Ragebait iemand succesvol', 'Floris vindt een Fransman',
-    'In een dame haar DM''s sliden', 'Le Lac du Connemara inzetten', 'Een potje Clash Royale winnen tegen Joran', 'Een stripclub bezoeken'
+    'In een dame haar DM''s sliden', 'Le Lac du Connemara inzetten', 'Een potje Clash Royale winnen tegen Joran', 'Een blote tetten bar bezoeken'
   ];
 
   simon_tasks text[] := array[
@@ -164,7 +164,7 @@ declare
   michiel_tasks text[] := array[
     'Airport beers', 'Iemand verliest zijn gsm', 'Een souvenir kopen', 'Een seksspeeltje kopen',
     'De zon zien opkomen', 'Een potje Clash Royale winnen tegen Joran', 'Iemand de weg vragen en daarna bewust de andere kant uit wandelen', 'Een Irish goodbye doen',
-    'Een selfie vragen met een vreemde alsof die bekend is', 'Blaffen naar vreemden', 'Een stripclub bezoeken', 'Yente een compleet absurd verhaal laten geloven',
+    'Een selfie vragen met een vreemde alsof die bekend is', 'Blaffen naar vreemden', 'Een blote tetten bar bezoeken', 'Yente een compleet absurd verhaal laten geloven',
     -- position 12 = Free vakje (auto)
     'Uit een café worden buitengezet', 'Op één dag op 4 verschillende locaties een pint drinken', 'Minstens 0.5m aan spullen op iemand stapelen', 'Een tactisch fapje',
     'Split the G', 'Glas stelen uit een café', 'Alcohol drinken vóór 10:00 uur', 'Robbe wakker maken',
