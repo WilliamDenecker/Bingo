@@ -87,3 +87,52 @@ export async function toggleSquare(squareId: number, currentDone: boolean, proof
   revalidatePath("/feed");
 }
 
+export async function replaceSquare(squareId: number, newChallengeLabel: string, protectionCode: string) {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) throw new Error("Not authenticated");
+  if (protectionCode !== "2255") throw new Error("Invalid protection code");
+
+  const normalizedLabel = newChallengeLabel.trim();
+  if (!normalizedLabel) throw new Error("Challenge cannot be empty");
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data: existingSquare, error: existingError } = await (supabase.from("bingo_squares") as any)
+    .select("id")
+    .eq("label", normalizedLabel)
+    .maybeSingle();
+
+  if (existingError) throw new Error(existingError.message);
+
+  let targetSquareId = existingSquare?.id;
+
+  if (!targetSquareId) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: createdSquare, error: createError } = await (supabase.from("bingo_squares") as any)
+      .insert({ label: normalizedLabel })
+      .select("id")
+      .single();
+
+    if (createError) throw new Error(createError.message);
+    targetSquareId = createdSquare?.id;
+  }
+
+  if (!targetSquareId) throw new Error("Unable to create or find challenge");
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { error } = await (supabase.from("user_squares") as any)
+    .update({ square_id: targetSquareId })
+    .eq("user_id", user.id)
+    .eq("square_id", squareId);
+
+  if (error) throw new Error(error.message);
+
+  revalidatePath("/");
+  revalidatePath("/leaderboard");
+  revalidatePath("/feed");
+}
+

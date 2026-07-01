@@ -39,12 +39,24 @@ export default async function MyGridPage() {
     .eq("user_id", user.id);
   const userSquares = (userSquaresRaw ?? []) as unknown as UserSquareRow[];
 
+  const { data: challengeRows } = await supabase
+    .from("bingo_squares")
+    .select("id, label")
+    .order("label", { ascending: true });
+
   const squares = userSquares.map((us) => ({
     id: us.bingo_squares.id,
     position: us.position,
     label: us.bingo_squares.label,
     is_done: us.is_done,
   }));
+
+  const challengeList = (challengeRows as { id: number; label: string }[] | null) ?? [];
+  const ownedSquareIds = new Set(userSquares.map((us) => us.square_id));
+  const availableSquares = challengeList
+    .filter((square) => square.label !== "Free vakje")
+    .filter((square) => !ownedSquareIds.has(square.id))
+    .map((square) => ({ id: square.id, label: square.label }));
 
   const doneArray = Array(25).fill(false);
   squares.forEach((s) => {
@@ -75,7 +87,7 @@ export default async function MyGridPage() {
           </span>
           !
         </div>
-        <MyGridClient squares={squares} score={score} />
+        <MyGridClient squares={squares} score={score} availableSquares={availableSquares} />
       </main>
 
       <BottomNav />

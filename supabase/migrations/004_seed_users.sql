@@ -142,7 +142,7 @@ declare
   ];
 
   robbe_tasks text[] := array[
-    'Split the G', 'Een DJ overtuigen om Belgische muziek te spelen', 'Airport beers', 'Deel waarborg van het  appartement verliezen',
+    'Split the G', 'Een DJ overtuigen om Belgische muziek te spelen', 'Airport beers', 'De waarborg van het appartement verliezen',
     'Minstens 0.5m aan spullen op iemand stapelen', 'Je mama of papa bellen en zeggen dat je de liefde van je leven hebt ontmoet', 'Een badkamerfissa houden', 'Applaudisseren wanneer het vliegtuig landt',
     'Een adjesestafette doen, minimaal 3 vs 3', 'Een openingszin uitproberen gekozen door de groep', 'Iemand verliest zijn sleutels', 'Op de toog dansen',
     -- position 12 = Free vakje (auto)

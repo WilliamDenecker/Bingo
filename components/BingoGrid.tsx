@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { CheckCircle2, X, Camera, ImagePlus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getCompletedLines } from "@/lib/scoring";
@@ -15,9 +15,11 @@ export interface BingoSquare {
 interface BingoGridProps {
   squares: BingoSquare[];
   onToggle?: (squareId: number, currentDone: boolean, proofFile?: File) => void;
+  onReplaceSquare?: (squareId: number, newChallengeLabel: string, protectionCode: string) => Promise<void>;
+  availableSquares?: { id: number; label: string }[];
 }
 
-export function BingoGrid({ squares, onToggle }: BingoGridProps) {
+export function BingoGrid({ squares, onToggle, onReplaceSquare, availableSquares }: BingoGridProps) {
   const sorted = [...squares].sort((a, b) => a.position - b.position);
   const doneArray = sorted.map((s) => s.is_done);
   const completedLines = getCompletedLines(doneArray);
@@ -27,15 +29,32 @@ export function BingoGrid({ squares, onToggle }: BingoGridProps) {
   const [proofPreview, setProofPreview] = useState<string | null>(null);
   const [proofFile, setProofFile] = useState<File | null>(null);
   const [proofError, setProofError] = useState<string | null>(null);
+  const [isReplacing, setIsReplacing] = useState(false);
+  const [swapChallengeLabel, setSwapChallengeLabel] = useState("");
+  const [swapProtectionCode, setSwapProtectionCode] = useState("");
+  const [swapError, setSwapError] = useState<string | null>(null);
   const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const didLongPress = useRef(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (expanded) {
+      setIsReplacing(false);
+      setSwapChallengeLabel("");
+      setSwapProtectionCode("");
+      setSwapError(null);
+    }
+  }, [expanded]);
 
   function openModal(square: BingoSquare) {
     setExpanded(square);
     setProofPreview(null);
     setProofFile(null);
     setProofError(null);
+    setIsReplacing(false);
+    setSwapChallengeLabel("");
+    setSwapProtectionCode("");
+    setSwapError(null);
   }
 
   function closeModal() {
@@ -43,6 +62,10 @@ export function BingoGrid({ squares, onToggle }: BingoGridProps) {
     setProofPreview(null);
     setProofFile(null);
     setProofError(null);
+    setIsReplacing(false);
+    setSwapChallengeLabel("");
+    setSwapProtectionCode("");
+    setSwapError(null);
   }
 
   function startLongPress(square: BingoSquare) {
@@ -169,6 +192,74 @@ export function BingoGrid({ squares, onToggle }: BingoGridProps) {
               <p className="text-lg font-semibold leading-snug text-center pr-6">
                 {expanded.label}
               </p>
+
+              {onReplaceSquare && (
+                <div className="mt-4 border-t pt-4">
+                  <button
+                    type="button"
+                    onClick={() => setIsReplacing((current) => !current)}
+                    className="w-full rounded-md border px-3 py-2 text-sm font-medium hover:bg-accent"
+                  >
+                    Change this challenge
+                  </button>
+
+                  {isReplacing && (
+                    <div className="mt-3 space-y-3">
+                      <label className="block text-xs font-semibold uppercase tracking-wide opacity-70">
+                        New challenge
+                      </label>
+                      <input
+                        type="text"
+                        value={swapChallengeLabel}
+                        onChange={(event) => setSwapChallengeLabel(event.target.value)}
+                        placeholder="Type your new challenge"
+                        className="w-full rounded-md border bg-background px-3 py-2 text-sm"
+                      />
+
+                      <label className="block text-xs font-semibold uppercase tracking-wide opacity-70">
+                        Protection code
+                      </label>
+                      <input
+                        type="password"
+                        value={swapProtectionCode}
+                        onChange={(event) => setSwapProtectionCode(event.target.value)}
+                        placeholder="Enter protection code"
+                        autoComplete="off"
+                        className="w-full rounded-md border bg-background px-3 py-2 text-sm"
+                      />
+
+                      {swapError && <p className="text-xs text-red-500">{swapError}</p>}
+
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          const challengeLabel = swapChallengeLabel.trim();
+
+                          if (!challengeLabel) {
+                            setSwapError("Type a new challenge first.");
+                            return;
+                          }
+
+                          if (swapProtectionCode !== "2255") {
+                            setSwapError("Wrong protection code.");
+                            return;
+                          }
+
+                          try {
+                            await onReplaceSquare(expanded.id, challengeLabel, swapProtectionCode);
+                            closeModal();
+                          } catch (error) {
+                            setSwapError(error instanceof Error ? error.message : "Unable to replace challenge.");
+                          }
+                        }}
+                        className="w-full rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground"
+                      >
+                        Swap challenge
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Photo/video picker — only when marking as done */}
               {onToggle && !expanded.is_done && (

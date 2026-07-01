@@ -2,15 +2,21 @@
 
 import { useState, useTransition } from "react";
 import { BingoGrid, type BingoSquare } from "@/components/BingoGrid";
-import { toggleSquare } from "@/app/actions";
+import { replaceSquare, toggleSquare } from "@/app/actions";
 import { createClient } from "@/lib/supabase/client";
+
+interface AvailableSquare {
+  id: number;
+  label: string;
+}
 
 interface MyGridClientProps {
   squares: BingoSquare[];
   score: number;
+  availableSquares: AvailableSquare[];
 }
 
-export function MyGridClient({ squares, score }: MyGridClientProps) {
+export function MyGridClient({ squares, score, availableSquares }: MyGridClientProps) {
   const [isPending, setIsPending] = useState(false);
   const [, startTransition] = useTransition();
 
@@ -46,13 +52,31 @@ export function MyGridClient({ squares, score }: MyGridClientProps) {
     }
   }
 
+  async function handleReplaceSquare(squareId: number, newChallengeLabel: string, protectionCode: string) {
+    setIsPending(true);
+    try {
+      await replaceSquare(squareId, newChallengeLabel, protectionCode);
+    } catch (err) {
+      console.error("[handleReplaceSquare] error:", err);
+      throw err;
+    } finally {
+      setIsPending(false);
+      startTransition(() => {});
+    }
+  }
+
   return (
     <div className={isPending ? "opacity-70 pointer-events-none" : ""}>
       <div className="mb-4 text-center">
         <span className="text-4xl font-bold text-primary">{score}</span>
         <span className="text-muted-foreground text-sm ml-1">/ 170 pts</span>
       </div>
-      <BingoGrid squares={squares} onToggle={handleToggle} />
+      <BingoGrid
+        squares={squares}
+        onToggle={handleToggle}
+        onReplaceSquare={handleReplaceSquare}
+        availableSquares={availableSquares}
+      />
     </div>
   );
 }

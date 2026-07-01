@@ -10,9 +10,12 @@ create policy "profiles_select" on profiles
 create policy "profiles_update_own" on profiles
   for update to authenticated using (auth.uid() = id);
 
--- bingo_squares: read-only for all authenticated users
+-- bingo_squares: readable by all authenticated users; insertable by authenticated users
 create policy "bingo_squares_select" on bingo_squares
   for select to authenticated using (true);
+
+create policy "bingo_squares_insert" on bingo_squares
+  for insert to authenticated with check (true);
 
 -- user_squares: all authenticated can read; only own rows insertable/updatable
 create policy "user_squares_select" on user_squares
