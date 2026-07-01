@@ -58,15 +58,15 @@ declare
     -- position 12 = Free vakje (auto)
     'Op één dag op 4 verschillende locaties een pint drinken', 'Alcohol drinken vóór 10:00 uur', 'Een tactisch fapje', 'Een adjesestafette doen, minimaal 3 vs 3',
     'Breakfast beers', 'Op de toog dansen', 'Aan iemand met een hond vragen of je hem mag aaien en vervolgens de eigenaar aaien', 'In een dame haar DM''s sliden',
-    'Een potje Brawl Stars spelen in de club', 'Helmet bar expaerience', 'Je mama of papa bellen en zeggen dat je de liefde van je leven hebt ontmoet', 'Drie of meer keren fastfood eten binnen 24 uur'
+    'Een potje Brawl Stars spelen in de club', 'Helmet bar experience', 'Je mama of papa bellen en zeggen dat je de liefde van je leven hebt ontmoet', 'Drie of meer keren fastfood eten binnen 24 uur'
   ];
 
   sam_tasks text[] := array[
     'Een dance battle doen met een vreemde in de club', 'Blaffen naar vreemden', 'Airport beers', 'koop een kraslotje op het vliegtuig (als ze niet verkopen: Win 10 euro op sport bet)',
-    'Helmet bar expaerience', 'Iemand gaat op uitstap met een dame', 'Een polonaise meedoen in de club', 'Op de toog dansen',
+    'Helmet bar experience', 'Iemand gaat op uitstap met een dame', 'Een polonaise meedoen in de club', 'Op de toog dansen',
     'De waarborg van het appartement verliezen', 'Een souvenir kopen', 'YMCA aanvragen en meedoen in een club', 'Een potje Brawl Stars spelen in de club',
     -- position 12 = Free vakje (auto)
-    'Een badkamerfissa houden', 'Een tactisch fapje', 'Een stripclub bezoeken', 'Een groep van mensen/kinderen "67" laten doen',
+    'Een badkamerfissa houden', 'Een tactisch fapje', 'Een seksspeeltje kopen', 'Een groep van mensen/kinderen "67" laten doen',
     'Happy Birthday zingen voor een vreemde', 'Applaudisseren wanneer het vliegtuig landt', 'Aan iemand met een hond vragen of je hem mag aaien en vervolgens de eigenaar aaien', 'Alcohol drinken vóór 10:00 uur',
     'Split the G', 'Floris vindt een Fransman', 'Breakfast beers', 'Drie of meer keren fastfood eten binnen 24 uur'
   ];
@@ -86,7 +86,7 @@ declare
     'Glas stelen uit een café', 'Een selfie nemen met random mensen', 'Alcohol drinken vóór 10:00 uur', 'Een dance battle doen met een vreemde in de club',
     'De zon zien opkomen', 'Een tactisch fapje', '€10 winnen op Sportbet', 'Een bierflesje op 5 verschillende manieren openen',
     -- position 12 = Free vakje (auto)
-    'Iemand verliest zijn sleutels', 'Applaudisseren wanneer het vliegtuig landt', 'Roulette spelen (minimale inzet 10 euro)', 'Le Lac du Connemara inzetten',
+    'Een stripclub bezoeken', 'Applaudisseren wanneer het vliegtuig landt', 'Roulette spelen (minimale inzet 10 euro)', 'Le Lac du Connemara inzetten',
     'Een seksspeeltje kopen', 'Ragebait iemand succesvol', 'Een adje doen met je broek op je enkels (in het openbaar)', 'Een souvenir kopen',
     'Op één dag op 4 verschillende locaties een pint drinken', 'De driesprong doen', 'Split the G', 'Een potje Brawl Stars spelen in de club'
   ];
@@ -96,7 +96,7 @@ declare
     'Een souvenir kopen', 'Blaffen naar vreemden', 'Een polonaise meedoen in de club', 'Een seksspeeltje kopen',
     'Een openingszin uitproberen gekozen door de groep', 'Split the G', 'Een bierflesje op 5 verschillende manieren openen', 'Een Belgisch biertje drinken in Praag',
     -- position 12 = Free vakje (auto)
-    'We zijn iemand van de groep kwijt', 'Een badkamerfissa houden', 'Een stripclub bezoeken', 'Drie of meer keren fastfood eten binnen 24 uur',
+    'We zijn iemand van de groep kwijt', 'Een badkamerfissa houden', 'Iemand verliest zijn gsm', 'Drie of meer keren fastfood eten binnen 24 uur',
     'Een groep van mensen/kinderen "67" laten doen', 'Een potje Brawl Stars spelen in de club', 'In een fontein of vijver gaan', 'Alcohol drinken vóór 10:00 uur',
     'Glas stelen uit een café', 'De driesprong doen', 'Een adjesestafette doen, minimaal 3 vs 3', 'Op één dag op 4 verschillende locaties een pint drinken'
   ];
@@ -127,7 +127,7 @@ declare
     'Een seksspeeltje kopen', 'Breakfast beers', 'Een adje doen met je broek op je enkels (in het openbaar)', 'Een bierflesje op 5 verschillende manieren openen',
     -- position 12 = Free vakje (auto)
     'Alcohol drinken vóór 10:00 uur', 'Applaudisseren wanneer het vliegtuig landt', 'Een adjesestafette doen, minimaal 3 vs 3', 'Een souvenir kopen',
-    'Een stripclub bezoeken', 'Een potje Clash Royale winnen tegen Joran', 'Floris vindt een Fransman', 'Een polonaise meedoen in de club',
+    'Glas stelen uit een café', 'Een potje Clash Royale winnen tegen Joran', 'Floris vindt een Fransman', 'Een polonaise meedoen in de club',
     'Een badkamerfissa houden', 'Een potje Brawl Stars spelen in de club', 'We zijn iemand van de groep kwijt', 'Drie of meer keren fastfood eten binnen 24 uur'
   ];
 
